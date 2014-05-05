@@ -107,6 +107,5 @@ exports.loadExtensions = (config) ->
     extension.location = path.resolve config.projectRoot, extension.location
 
     ext = require "#{extension.location}/main"
-    config = _.defaults extension.configuration, config.extensionDefaults
-    loaded[extension.name] = new ext.extension config
+    loaded[extension.name] = new ext.extension _.defaults extension.configuration, config.extensionDefaults
   loaded
