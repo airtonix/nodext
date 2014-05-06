@@ -10,6 +10,7 @@ in NodeXT:
 {_} = require 'underscore'
 path = require 'path'
 events = require 'events'
+fs = require 'fs'
 
 class Extension extends events.EventEmitter
   ###
@@ -105,7 +106,11 @@ exports.loadExtensions = (config) ->
 
     extension.location ?= "../extension/#{extension.name}"
     extension.location = path.resolve config.projectRoot, extension.location
+    if fs.lstatSync(extension.location).isDirectory()
+      ext = require "#{extension.location}/main"
+    else
+      ext = require extension.location
+    if ext
+      loaded[extension.name] = new ext.extension _.defaults extension.configuration, config.extensionDefaults
 
-    ext = require "#{extension.location}/main"
-    loaded[extension.name] = new ext.extension _.defaults extension.configuration, config.extensionDefaults
   loaded
